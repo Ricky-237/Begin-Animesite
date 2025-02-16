@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+    "build": "sh render-build.sh",
     "start": "node index.js"
   },
   "keywords": [],
