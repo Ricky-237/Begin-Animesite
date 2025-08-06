@@ -29,7 +29,7 @@ const script = `
     });
 `;
 
-app.post('/execute-js', async (req, res) => {
+app.get('/', async (req, res) => {
     try {
         const browser = await puppeteer.launch({
             args: ['--no-sandbox', '--disable-setuid-sandbox'],
@@ -61,4 +61,5 @@ app.listen(PORT, '0.0.0.0', () => {
 //app.listen(PORT, () => {
 //    console.log(`Server is running on http://localhost:${PORT}`);
 //});
+
 
