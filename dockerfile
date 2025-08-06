@@ -9,4 +9,5 @@ COPY . .
 ENV PUPPETEER_EXECUTABLE_PATH='/usr/bin/chromium-browser'
 
 EXPOSE 8080
-CMD [ "node", "server.js" ]
+CMD [ "node", "index.js" ]
+
