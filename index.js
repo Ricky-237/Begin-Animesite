@@ -30,6 +30,43 @@ const script = `
 `;
 
 app.get('/', async (req, res) => {
+  try {
+    const browser = await puppeteer.launch({
+      args: ['--no-sandbox','--disable-setuid-sandbox']
+    });
+    const page = await browser.newPage();
+    await page.goto(url);
+
+    // Ici on passe directement une fonction async
+    const modifiedHTML = await page.evaluate(async () => {
+      // on attend 3 s
+      await new Promise(r => setTimeout(r, 3000));
+      const div = document.querySelector('.flex.justify-center.items-center.w-auto.px-2');
+      if (div) {
+        div.click();
+        // on attend 2 s
+        await new Promise(r => setTimeout(r, 2000));
+        console.log('div trouvée');
+        const di = document.querySelector(
+          "body > div.grid.tablet\\:grid-cols-[auto,1fr] > main > div.-mt-[100px].tablet\\:-mt-[400px].laptop\\:-mt-[650px].desktop\\:-mt-[800px].transition-smooth.space-y-6.px-2.overflow-x-hidden.tablet\\:space-y-12.tablet\\:px-0.undefined > div"
+        );
+        return di ? di.outerHTML : 'Div non trouvée.';
+      } else {
+        console.log('Div non trouvée.');
+        return 'Div non trouvée.';
+      }
+    });
+
+    await browser.close();
+    res.set('Content-Type','text/plain');
+    res.send(modifiedHTML);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('An error occurred while processing your request');
+  }
+});
+
+app.get('/old', async (req, res) => {
     try {
         const browser = await puppeteer.launch({
             args: ['--no-sandbox', '--disable-setuid-sandbox'],
@@ -61,5 +98,6 @@ app.listen(PORT, '0.0.0.0', () => {
 //app.listen(PORT, () => {
 //    console.log(`Server is running on http://localhost:${PORT}`);
 //});
+
 
 
