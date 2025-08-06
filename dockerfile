@@ -1,32 +1,21 @@
-# Utiliser une image de base Node.js
-FROM node:14
+FROM node:18-slim
 
-# Installer les dépendances nécessaires pour Puppeteer
+# 1. Installer les dépendances système pour Chromium
 RUN apt-get update && apt-get install -y \
-    wget \
-    gnupg2 \
-    unzip \
-    && wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | apt-key add - \
-    && echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list \
-    && apt-get update \
-    && apt-get install -y google-chrome-stable \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+    ca-certificates fonts-liberation libappindicator3-1 libasound2 \
+    libatk-bridge2.0-0 libatk1.0-0 libcups2 libdbus-1-3 libgdk-pixbuf2.0-0 \
+    libnspr4 libnss3 libx11-xcb1 libxcomposite1 libxdamage1 libxrandr2 \
+    xdg-utils libgbm-dev libxshmfence-dev chromium
 
-# Créer un répertoire pour l'application
+# 2. Créer le répertoire de travail et copier ton code
 WORKDIR /app
-
-# Copier le package.json et le package-lock.json
 COPY package*.json ./
-
-# Installer les dépendances
 RUN npm install
-
-# Copier le reste de l'application
 COPY . .
 
-# Exposer le port
-EXPOSE 3000
+# 3. Indiquer à Puppeteer d’utiliser Chromium système
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
+    PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
 
-# Commande pour démarrer l'application
-CMD ["node", "server.js"]
+# 4. Lancer l’application
+CMD ["node", "index.js"]
