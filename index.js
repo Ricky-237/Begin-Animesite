@@ -2,7 +2,7 @@ const express = require('express');
 const puppeteer = require('puppeteer');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+//const PORT = process.env.PORT || 3000;
 
 // Middleware pour parser le JSON
 app.use(express.json());
@@ -53,6 +53,12 @@ app.post('/execute-js', async (req, res) => {
 });
 
 // Démarrer le serveur
-app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Serveur démarré sur le port ${PORT}`);
 });
+
+//app.listen(PORT, () => {
+//    console.log(`Server is running on http://localhost:${PORT}`);
+//});
+
